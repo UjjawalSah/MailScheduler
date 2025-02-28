@@ -12,11 +12,11 @@ This project was developed as part of a **Hackathon**, where we aimed to build a
 - ✅ Dashboard to view and manage scheduled emails
 
 ## 🛠️ Tech Stack
-- **Backend**: Python (Flask/Django) / Node.js (Express)
-- **Frontend**: React.js / HTML, CSS, JavaScript
-- **Database**: MongoDB / PostgreSQL / Firebase
-- **Email Service**: SMTP / SendGrid / AWS SES
-- **Hosting**: Vercel / Heroku / AWS
+- **Backend**: Python (Flask)
+- **Frontend**: React.js
+- **Database**: MongoDB
+- **Email Service**: SMTP / SendGrid
+- **Hosting**: Ngrok
 
 ## ⚡ How to Run
 1. Clone the repository:
@@ -41,8 +41,8 @@ This project was developed as part of a **Hackathon**, where we aimed to build a
 - 📌 More analytics on email performance
 
 ## 💡 Contributors
-- **Team Name:** [Your Team Name]
-- **Hackathon:** [Hackathon Name]
+- **Team Name:** Mind Install
+- **Hackathon:** Technex'25
 - **Members:**
   - [Ujjawal Kumar]
   - [Rajnish Kumar]
