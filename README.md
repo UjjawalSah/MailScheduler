@@ -44,7 +44,7 @@ This project was developed as part of a **Hackathon**, where we aimed to build a
 - **Team Name:** [Your Team Name]
 - **Hackathon:** [Hackathon Name]
 - **Members:**
-  - [Member 1]
+  - [Rajnish Rumar]
   - [Member 2]
   - [Member 3]
   - [Member 4]
