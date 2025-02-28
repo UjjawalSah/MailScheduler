@@ -5,6 +5,7 @@ from controller.signup_c import sign_up
 from controller.otp_controller import otp_bp
 from controller.signin_c import sign_in
 from controller.forget_password import forgot_password
+from controller.userdata_controller import submit_form
 
 
 
@@ -24,13 +25,14 @@ def apply_cors(response):
 app.secret_key = "your_secret_key"  # Required for session management
 
 # Define your routes
-app.route('/submit_contact', methods=['POST'])(submit_contact)
+app.route('/api/submit_contact', methods=['POST'])(submit_contact)
 app.route('/signup', methods=['POST'])(sign_up)
 app.register_blueprint(otp_bp)
-app.route("/signin", methods=["POST"])(sign_in)
+app.route("/api/signin", methods=["POST"])(sign_in)
 app.route('/api/generate', methods=['POST', 'OPTIONS'])
 app.add_url_rule('/forgot-password', view_func=forgot_password, methods=['POST'])
+app.route('/api/submit-form', methods=['POST'])(submit_form)
  
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5001, debug=True)
