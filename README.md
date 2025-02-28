@@ -44,13 +44,10 @@ This project was developed as part of a **Hackathon**, where we aimed to build a
 - **Team Name:** Mind Install
 - **Hackathon:** Technex'25
 - **Members:**
-  - [Ujjawal Kumar]
-  - [Rajnish Kumar]
-  - [Priyanshu Jaiswal]
-  - [Arman Ahmed]
-
-## 📜 License
-This project is licensed under the **MIT License**.
+  - Ujjawal Kumar
+  - Rajnish Kumar
+  - Priyanshu Jaiswal
+  - Arman Ahmed
 
 ---
 
