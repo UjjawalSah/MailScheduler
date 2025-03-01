@@ -1,203 +1,328 @@
-
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { LineChart, Line, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
-import { BarChart, ChevronRight, Mail, MousePointerClick, Users, Rocket, Target } from "lucide-react";
+import {
+  BarChart,
+  Bar,
+  ScatterChart,
+  Scatter,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+  ResponsiveContainer,
+} from "recharts";
+import { Mail, Clock } from "lucide-react"; // Icons
 
-const analyticsData = [
-  { name: "Jan", value: 1200, engagement: 65, conversion: 42 },
-  { name: "Feb", value: 2100, engagement: 75, conversion: 55 },
-  { name: "Mar", value: 800, engagement: 45, conversion: 38 },
-  { name: "Apr", value: 1600, engagement: 85, conversion: 62 },
-  { name: "May", value: 900, engagement: 55, conversion: 45 },
-  { name: "Jun", value: 1700, engagement: 90, conversion: 68 },
-];
+// Type definitions for analytics data
+interface DayEngagement {
+  day_of_week: number;
+  click_rate: number;
+}
 
-const Analytics = () => {
+interface TimeEngagement {
+  times_of_day: string;
+  click_rate: number;
+}
+
+interface SubjectClick {
+  subject_len: number;
+  click_rate: number;
+}
+
+interface CategoryEngagement {
+  category: string;
+  click_rate: number;
+}
+
+interface ProductEngagement {
+  product: string;
+  click_rate: number;
+}
+
+interface TargetAudienceEngagement {
+  target_audience: string;
+  click_rate: number;
+}
+
+interface AnalyticsData {
+  engagement_by_day: DayEngagement[];
+  engagement_by_time: TimeEngagement[];
+  subject_vs_click: SubjectClick[];
+  category_engagement: CategoryEngagement[];
+  product_engagement: ProductEngagement[];
+  target_audience_engagement: TargetAudienceEngagement[];
+}
+
+const Analytics: React.FC = () => {
+  const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
+
+  // Automatically fetch analytics data when the component mounts.
+  useEffect(() => {
+    axios
+      .get<AnalyticsData>("http://localhost:5001/analytics")
+      .then((response) => setAnalytics(response.data))
+      .catch((error) =>
+        console.error("Error fetching analytics data:", error)
+      );
+  }, []);
+
+  if (!analytics) {
+    return <div>Loading analytics...</div>;
+  }
+
+  // Determine the best time to send mail based on the highest average click rate.
+  let bestTimeRecommendation = "";
+  if (analytics.engagement_by_time.length > 0) {
+    const bestTime = analytics.engagement_by_time.reduce((max, cur) =>
+      cur.click_rate > max.click_rate ? cur : max
+    );
+    bestTimeRecommendation = `Recommended best time to send mail: ${bestTime.times_of_day} (Avg Click Rate: ${bestTime.click_rate.toFixed(
+      2
+    )})`;
+  }
+
   return (
-    <div className="space-y-8">
-      <header className="mb-8">
-      <h1>-----</h1>
-      <h1>-----</h1>
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent mb-2">
-          Analytics Overview
+     
+    <div className="p-8 space-y-12">
+       
+      {/* Header */}
+      <header className="flex items-center space-x-3">
+         
+        <Mail className="h-12 w-10 text-blue-600" />
+        <h1 className="text-4xl font-bold text-blue-600 text-left">
+          Email Campaign Analytics
         </h1>
-        <p className="text-indigo-600">Track your email campaign performance with real-time insights</p>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <Card className="p-6 bg-gradient-to-br from-indigo-50 to-white border-indigo-100 hover:shadow-xl transition-all duration-300">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center space-x-2">
-              <div className="p-2 bg-indigo-100 rounded-lg">
-                <Mail className="h-5 w-5 text-indigo-600" />
-              </div>
-              <h3 className="text-lg font-semibold text-indigo-900">Open Rates</h3>
-            </div>
-            <Button variant="ghost" size="sm" className="hover:bg-indigo-50">
-              <ChevronRight className="h-4 w-4 text-indigo-600" />
-            </Button>
-          </div>
-          <p className="text-3xl font-bold text-indigo-900">45.2%</p>
-          <div className="flex items-center mt-2">
-            <span className="text-green-500 text-sm font-medium">+2.5%</span>
-            <span className="text-slate-600 text-sm ml-1">from last month</span>
-          </div>
-        </Card>
-
-        <Card className="p-6 bg-gradient-to-br from-blue-50 to-white border-blue-100 hover:shadow-xl transition-all duration-300">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center space-x-2">
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <MousePointerClick className="h-5 w-5 text-blue-600" />
-              </div>
-              <h3 className="text-lg font-semibold text-blue-900">Click-Through</h3>
-            </div>
-            <Button variant="ghost" size="sm" className="hover:bg-blue-50">
-              <ChevronRight className="h-4 w-4 text-blue-600" />
-            </Button>
-          </div>
-          <p className="text-3xl font-bold text-blue-900">28.9%</p>
-          <div className="flex items-center mt-2">
-            <span className="text-green-500 text-sm font-medium">+1.2%</span>
-            <span className="text-slate-600 text-sm ml-1">from last month</span>
-          </div>
-        </Card>
-
-        <Card className="p-6 bg-gradient-to-br from-cyan-50 to-white border-cyan-100 hover:shadow-xl transition-all duration-300">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center space-x-2">
-              <div className="p-2 bg-cyan-100 rounded-lg">
-                <Target className="h-5 w-5 text-cyan-600" />
-              </div>
-              <h3 className="text-lg font-semibold text-cyan-900">Response Rate</h3>
-            </div>
-            <Button variant="ghost" size="sm" className="hover:bg-cyan-50">
-              <ChevronRight className="h-4 w-4 text-cyan-600" />
-            </Button>
-          </div>
-          <p className="text-3xl font-bold text-cyan-900">15.7%</p>
-          <div className="flex items-center mt-2">
-            <span className="text-green-500 text-sm font-medium">+0.8%</span>
-            <span className="text-slate-600 text-sm ml-1">from last month</span>
-          </div>
-        </Card>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="p-6 bg-gradient-to-br from-white to-indigo-50 border-indigo-100">
-          <h3 className="text-lg font-semibold text-indigo-900 mb-4 flex items-center">
-            <Rocket className="h-5 w-5 mr-2 text-indigo-600" />
-            Performance Trends
-          </h3>
-          <div className="h-[400px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={analyticsData}>
-                <defs>
-                  <linearGradient id="valueGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#4F46E5" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#4F46E5" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
-                <XAxis dataKey="name" stroke="#6B7280" />
-                <YAxis stroke="#6B7280" />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                    border: '1px solid #E5E7EB',
-                    borderRadius: '6px'
+      {/* 1. Best Time & Day for Email Engagement */}
+      <section>
+        <h2 className="text-2xl font-semibold mb-4 flex items-center space-x-2">
+          <Clock className="h-6 w-6 text-blue-500" />
+          <span>Best Time & Day for Email Engagement</span>
+        </h2>
+        {bestTimeRecommendation && (
+          <p className="mb-4 text-lg text-gray-700">
+            {bestTimeRecommendation}
+          </p>
+        )}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* Engagement by Day */}
+          <Card className="p-4">
+            <h3 className="text-xl font-semibold mb-2">By Day of Week</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={analytics.engagement_by_day}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis
+                  dataKey="day_of_week"
+                  label={{
+                    value: "Day of Week",
+                    position: "insideBottom",
+                    offset: -5,
                   }}
                 />
-                <Line
-                  type="monotone"
-                  dataKey="value"
-                  stroke="#4F46E5"
-                  strokeWidth={2}
-                  dot={{
-                    stroke: '#4F46E5',
-                    strokeWidth: 2,
-                    r: 4,
-                    fill: '#fff'
-                  }}
-                  activeDot={{
-                    stroke: '#4F46E5',
-                    strokeWidth: 2,
-                    r: 6,
-                    fill: '#fff'
+                <YAxis
+                  label={{
+                    value: "Avg Click Rate",
+                    angle: -90,
+                    position: "insideLeft",
                   }}
                 />
-                <Line
-                  type="monotone"
-                  dataKey="engagement"
-                  stroke="#0EA5E9"
-                  strokeWidth={2}
-                  dot={{
-                    stroke: '#0EA5E9',
-                    strokeWidth: 2,
-                    r: 4,
-                    fill: '#fff'
-                  }}
-                  activeDot={{
-                    stroke: '#0EA5E9',
-                    strokeWidth: 2,
-                    r: 6,
-                    fill: '#fff'
-                  }}
+                <Tooltip />
+                <Bar
+                  dataKey="click_rate"
+                  fill="#4F46E5"
+                  isAnimationActive={true}
+                  animationDuration={1500}
                 />
-              </LineChart>
+              </BarChart>
             </ResponsiveContainer>
-          </div>
-        </Card>
-
-        <Card className="p-6 bg-gradient-to-br from-white to-blue-50 border-blue-100">
-          <h3 className="text-lg font-semibold text-blue-900 mb-4 flex items-center">
-            <Users className="h-5 w-5 mr-2 text-blue-600" />
-            Audience Engagement
-          </h3>
-          <div className="h-[400px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={analyticsData}>
-                <defs>
-                  <linearGradient id="conversionGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#0EA5E9" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#0EA5E9" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
-                <XAxis dataKey="name" stroke="#6B7280" />
-                <YAxis stroke="#6B7280" />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                    border: '1px solid #E5E7EB',
-                    borderRadius: '6px'
+          </Card>
+          {/* Engagement by Time */}
+          <Card className="p-4">
+            <h3 className="text-xl font-semibold mb-2">By Time of Day</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={analytics.engagement_by_time}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis
+                  dataKey="times_of_day"
+                  label={{
+                    value: "Time of Day",
+                    position: "insideBottom",
+                    offset: -5,
                   }}
                 />
-                <Line
-                  type="monotone"
-                  dataKey="conversion"
-                  stroke="#0EA5E9"
-                  strokeWidth={2}
-                  dot={{
-                    stroke: '#0EA5E9',
-                    strokeWidth: 2,
-                    r: 4,
-                    fill: '#fff'
+                <YAxis
+                  label={{
+                    value: "Avg Click Rate",
+                    angle: -90,
+                    position: "insideLeft",
                   }}
-                  activeDot={{
-                    stroke: '#0EA5E9',
-                    strokeWidth: 2,
-                    r: 6,
-                    fill: '#fff'
-                  }}
-                  fill="url(#conversionGradient)"
                 />
-              </LineChart>
+                <Tooltip />
+                <Bar
+                  dataKey="click_rate"
+                  fill="#0EA5E9"
+                  isAnimationActive={true}
+                  animationDuration={1500}
+                />
+              </BarChart>
             </ResponsiveContainer>
-          </div>
+          </Card>
+        </div>
+      </section>
+
+      {/* 2. Email Content Effectiveness: Subject Length vs. Click Rate */}
+      <section>
+        <h2 className="text-2xl font-semibold mb-4">
+          Subject Length vs. Click Rate
+        </h2>
+        <Card className="p-4">
+          <ResponsiveContainer width="100%" height={300}>
+            <ScatterChart>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis
+                type="number"
+                dataKey="subject_len"
+                name="Subject Length"
+                label={{
+                  value: "Subject Length",
+                  position: "insideBottom",
+                  offset: 0,
+                }}
+              />
+              <YAxis
+                type="number"
+                dataKey="click_rate"
+                name="Click Rate"
+                label={{
+                  value: "Click Rate",
+                  angle: -90,
+                  position: "insideLeft",
+                }}
+              />
+              <Tooltip cursor={{ strokeDasharray: "3 3" }} />
+              <Scatter
+                name="Subject vs Click"
+                data={analytics.subject_vs_click}
+                fill="#34D399"
+                isAnimationActive={true}
+                animationDuration={1500}
+              />
+            </ScatterChart>
+          </ResponsiveContainer>
         </Card>
-      </div>
+      </section>
+
+      {/* 3. Target Audience Impact on CTR */}
+      <section>
+        <h2 className="text-2xl font-semibold mb-4">
+          Target Audience Impact on CTR
+        </h2>
+        <p className="mb-4 text-lg text-gray-700">
+          Compare how different target audiences—such as Marketing emails versus
+          Job Application emails—perform in terms of click-through rate (CTR). These insights
+          help you optimize campaigns for specific audience segments.
+        </p>
+        <Card className="p-4">
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={analytics.target_audience_engagement}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis
+                dataKey="target_audience"
+                label={{
+                  value: "Target Audience",
+                  position: "insideBottom",
+                  offset: -5,
+                }}
+              />
+              <YAxis
+                label={{
+                  value: "Avg CTR",
+                  angle: -90,
+                  position: "insideLeft",
+                }}
+              />
+              <Tooltip />
+              <Bar
+                dataKey="click_rate"
+                fill="#ff7300"
+                isAnimationActive={true}
+                animationDuration={1500}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        </Card>
+      </section>
+
+      {/* 4. Product/Category Impact on CTR */}
+      <section>
+        <h2 className="text-2xl font-semibold mb-4">
+          Product/Category Impact on CTR
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <Card className="p-4">
+            <h3 className="text-xl font-semibold mb-2">By Category</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={analytics.category_engagement}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis
+                  dataKey="category"
+                  label={{
+                    value: "Category",
+                    position: "insideBottom",
+                    offset: -5,
+                  }}
+                />
+                <YAxis
+                  label={{
+                    value: "Avg Click Rate",
+                    angle: -90,
+                    position: "insideLeft",
+                  }}
+                />
+                <Tooltip />
+                <Bar
+                  dataKey="click_rate"
+                  fill="#EF4444"
+                  isAnimationActive={true}
+                  animationDuration={1500}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </Card>
+          <Card className="p-4">
+            <h3 className="text-xl font-semibold mb-2">By Product</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={analytics.product_engagement}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis
+                  dataKey="product"
+                  label={{
+                    value: "Product",
+                    position: "insideBottom",
+                    offset: -5,
+                  }}
+                />
+                <YAxis
+                  label={{
+                    value: "Avg Click Rate",
+                    angle: -90,
+                    position: "insideLeft",
+                  }}
+                />
+                <Tooltip />
+                <Bar
+                  dataKey="click_rate"
+                  fill="#10B981"
+                  isAnimationActive={true}
+                  animationDuration={1500}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </Card>
+        </div>
+      </section>
     </div>
   );
 };
