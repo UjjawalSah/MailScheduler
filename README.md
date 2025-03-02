@@ -1,7 +1,10 @@
 # 📩 Email Scheduling System
 
+[**Demo Here**](https://e19c-103-151-209-231.ngrok-free.app/)
+
 ## 🚀 Hackathon Project
-This project was developed as part of a **Hackathon**, where we aimed to build an efficient and user-friendly **Email Scheduling System** to automate email sending at specific times.
+This project was developed as part of a **Hackathon** at Technex'25, where our team, **Mind Install**, built an efficient and user-friendly **Email Scheduling System** to automate the sending of emails at scheduled times.
+
 
 ## 📌 Features
 - ✅ Schedule emails to be sent at a later time
