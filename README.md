@@ -1,6 +1,6 @@
 # 📩 Email Scheduling System
 
-[**Demo Here**](https://e19c-103-151-209-231.ngrok-free.app/)
+[**Demo Here**](https://mailscheduler.vercel.app/)
 
 ## 🚀 Hackathon Project
 This project was developed as part of a **Hackathon** at Technex'25, where our team, **Mind Install**, built an efficient and user-friendly **Email Scheduling System** to automate the sending of emails at scheduled times.
